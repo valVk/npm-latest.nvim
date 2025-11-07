@@ -173,22 +173,13 @@ end
 
 local function get_package_name_under_cursor()
   local line = vim.api.nvim_get_current_line()
-  local col = vim.api.nvim_win_get_cursor(0)[2]
 
+  -- Match package name from line like: "package-name": "version"
+  -- This handles both regular and scoped packages (e.g., @org/package)
   local package_name = line:match('"([^"]+)"%s*:%s*"[^"]+"')
 
-  if package_name then
-    -- Escape special pattern characters for string.find
-    local escaped_name = package_name:gsub("([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1")
-    local start_pos = line:find('"' .. escaped_name .. '"', 1, true)
-
-    if start_pos then
-      local end_pos = start_pos + #package_name + 1
-
-      if col >= start_pos - 1 and col <= end_pos then
-        return package_name
-      end
-    end
+  if package_name and not package_name:match("^file:") then
+    return package_name
   end
 
   return nil
