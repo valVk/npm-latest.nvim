@@ -178,11 +178,16 @@ local function get_package_name_under_cursor()
   local package_name = line:match('"([^"]+)"%s*:%s*"[^"]+"')
 
   if package_name then
-    local start_pos = line:find('"' .. package_name .. '"')
-    local end_pos = start_pos + #package_name + 1
+    -- Escape special pattern characters for string.find
+    local escaped_name = package_name:gsub("([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1")
+    local start_pos = line:find('"' .. escaped_name .. '"', 1, true)
 
-    if col >= start_pos - 1 and col <= end_pos then
-      return package_name
+    if start_pos then
+      local end_pos = start_pos + #package_name + 1
+
+      if col >= start_pos - 1 and col <= end_pos then
+        return package_name
+      end
     end
   end
 
