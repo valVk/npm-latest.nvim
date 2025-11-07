@@ -1,0 +1,20 @@
+# Neovim
+*.swp
+*.swo
+*~
+
+# MacOS
+.DS_Store
+
+# Tags
+tags
+tags.lock
+tags.temp
+
+# Editor directories
+.vscode/
+.idea/
+
+# Test files
+test/
+spec/
